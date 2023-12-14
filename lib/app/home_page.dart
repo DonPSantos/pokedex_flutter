@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 context.go('/detail/1');
               },
-              child: const Text('Toque aqui!')),
+              child: const Text('Teste navegação detail')),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 300, vertical: 50),
             child: TextField(
