@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late PokemonListStore store = locator<PokemonListStore>();
+  PokemonListStore store = locator<PokemonListStore>();
   @override
   void initState() {
     super.initState();
@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size s = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pokemon'),
@@ -29,10 +31,13 @@ class _HomePageState extends State<HomePage> {
         animation: store,
         builder: (context, child) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 300, vertical: 50),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: (s.width * 0.2),
+                ),
                 child: TextField(
                   onChanged: (value) {
                     store.getFilteredPokemons(value.toLowerCase());
@@ -48,8 +53,11 @@ class _HomePageState extends State<HomePage> {
               ),
               if (store.state is GettedPokemonListState)
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 200),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: (s.width * 0.15),
+                    ),
                     child: ListView.builder(
                       itemCount: store.state.filteredList.length,
                       itemBuilder: (context, index) {

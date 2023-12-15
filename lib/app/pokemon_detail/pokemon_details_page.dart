@@ -19,6 +19,7 @@ class _PokemonDetailsPageState extends State<PokemonDetailsPage> {
   @override
   void initState() {
     super.initState();
+    store.state = EmptyPokemonDetailState();
     store.getById(int.parse(widget.pokemonId));
   }
 
@@ -28,7 +29,9 @@ class _PokemonDetailsPageState extends State<PokemonDetailsPage> {
       appBar: AppBar(
         leading: TextButton(
           child: const Icon(Icons.arrow_back),
-          onPressed: () => context.go("/"),
+          onPressed: () {
+            context.go("/");
+          },
         ),
         title: const Text("Back"),
       ),

@@ -13,4 +13,6 @@ void setupLocator() {
   locator.registerSingleton<PokemonListStore>(PokemonListStore(),
       signalsReady: true);
   locator.registerLazySingleton<PokemonDetailStore>(() => PokemonDetailStore());
+
+  locator<PokemonListStore>().getPokemons();
 }
