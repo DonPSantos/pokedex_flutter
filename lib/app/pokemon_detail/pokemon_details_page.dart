@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pokedex_flutter/app/pokemon_detail/pokemon_detail_state.dart';
+import 'package:pokedex_flutter/app/pokemon_detail/widgets/detail_card_widget.dart';
 import 'package:pokedex_flutter/configurations/locator_setup.dart';
 import 'package:pokedex_flutter/app/pokemon_detail/pokemon_detail_store.dart';
 
@@ -12,55 +14,69 @@ class PokemonDetailsPage extends StatefulWidget {
 }
 
 class _PokemonDetailsPageState extends State<PokemonDetailsPage> {
-  final store = locator.get<PokemonDetailStore>();
+  final PokemonDetailStore store = locator.get<PokemonDetailStore>();
 
-  void _listener() => () {
-        setState(() {});
-      };
   @override
   void initState() {
     super.initState();
-    store.addListener(_listener);
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      store.getById(int.parse(widget.pokemonId));
-    });
-  }
-
-  @override
-  void dispose() {
-    store.removeListener(_listener);
-    super.dispose();
+    store.getById(int.parse(widget.pokemonId));
   }
 
   @override
   Widget build(BuildContext context) {
-    var store = locator<PokemonDetailStore>();
-    Widget body = Container();
-
-    if (store.state is EmptyPokemonDetailState) {
-      body = const Center(
-        child: CircularProgressIndicator(),
-      );
-    } else if (store.state is GettedPokemonDetailState) {
-      Container(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  child: Image.network(store.state.pokemon.urlFront),
-                ),
-                ClipRRect(
-                  child: Image.network(store.state.pokemon.urlBack),
-                ),
-              ],
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: TextButton(
+          child: const Icon(Icons.arrow_back),
+          onPressed: () => context.go("/"),
         ),
-      );
-    }
-    return body;
+        title: const Text("Back"),
+      ),
+      body: AnimatedBuilder(
+        animation: store,
+        builder: (context, child) {
+          return ListView(
+            children: [
+              if (store.state is EmptyPokemonDetailState)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              if (store.state is GettedPokemonDetailState)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                          child: Image.network(store.state.pokemon.urlFront),
+                        ),
+                        ClipRRect(
+                          child: Image.network(store.state.pokemon.urlBack),
+                        ),
+                      ],
+                    ),
+                    Wrap(
+                      spacing: 20,
+                      alignment: WrapAlignment.center,
+                      direction: Axis.horizontal,
+                      children: [
+                        DetailCardWidget(
+                            title: "Tipos",
+                            propsList: store.state.pokemon.types),
+                        DetailCardWidget(
+                            title: "Habilidades",
+                            propsList: store.state.pokemon.abilities),
+                      ],
+                    ),
+                  ],
+                )
+            ],
+          );
+        },
+      ),
+    );
   }
 }

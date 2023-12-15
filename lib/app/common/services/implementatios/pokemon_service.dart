@@ -12,7 +12,7 @@ class PokemonListService extends IPokemonService {
     List<PokemonListModel> finalPokemonList = List.empty(growable: true);
 
     final response =
-        await dio.get('https://pokeapi.co/api/v2/pokemon/?limit=20');
+        await dio.get('https://pokeapi.co/api/v2/pokemon/?limit=860');
     final list = response.data["results"] as List;
     final pokemonIncompletList =
         list.map((i) => PokemonListModel.fromJson(i)).toList();

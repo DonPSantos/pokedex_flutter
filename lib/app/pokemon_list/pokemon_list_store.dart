@@ -4,7 +4,7 @@ import 'package:pokedex_flutter/app/common/services/interfaces/ipokemon_service.
 import 'package:pokedex_flutter/app/pokemon_list/pokemon_list_state.dart';
 
 class PokemonListStore extends ChangeNotifier {
-  final service = locator.get<IPokemonService>();
+  final _service = locator.get<IPokemonService>();
   PokemonListState state = EmptyPokemonListState();
 
   getPokemons() async {
@@ -12,12 +12,11 @@ class PokemonListStore extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await service.getAll();
+      final response = await _service.getAll();
 
       state = GettedPokemonListState(
           fullList: response, filteredList: response.getRange(0, 9).toList());
       notifyListeners();
-      print("Get Success");
     } catch (e) {
       state = ErrorPokemonListState(message: e.toString());
       notifyListeners();
@@ -26,7 +25,6 @@ class PokemonListStore extends ChangeNotifier {
 
   getFilteredPokemons(String name) async {
     if (name.length > 2) {
-      var fixedList = state.fullList;
       var filter = state.fullList.where((e) => e.name.contains(name)).toList();
       state = GettedPokemonListState(
           fullList: state.fullList, filteredList: filter);
